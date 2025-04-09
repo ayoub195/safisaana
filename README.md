@@ -1,4 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Safisaana
+
+A modern e-commerce platform built with Next.js, Firebase, and IntaSend payment integration.
+
+## Features
+
+- Product management with drag-and-drop image ordering
+- Course management system
+- Secure payment processing with IntaSend
+- User authentication with Firebase
+- Responsive design
+
+## Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/ayoub195/safisaana.git
+cd safisaana
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create a `.env.local` file with the following variables:
+```
+NEXT_PUBLIC_INTASEND_PUBLISHABLE_KEY=your_intasend_publishable_key
+INTASEND_SECRET_KEY=your_intasend_secret_key
+NEXT_PUBLIC_APP_URL=your_app_url
+```
+
+4. Run the development server:
+```bash
+npm run dev
+```
+
+## Environment Variables
+
+Make sure to set up these environment variables in your deployment platform:
+
+- `NEXT_PUBLIC_INTASEND_PUBLISHABLE_KEY`: Your IntaSend publishable key
+- `INTASEND_SECRET_KEY`: Your IntaSend secret key
+- `NEXT_PUBLIC_APP_URL`: Your application URL (e.g., https://your-domain.com)
+
+## Deployment
+
+This project is designed to be deployed on Vercel or similar platforms that support Next.js applications.
 
 ## Getting Started
 

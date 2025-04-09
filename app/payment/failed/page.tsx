@@ -1,64 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 import { XCircle } from 'lucide-react';
 
-interface PaymentData {
-  amount: number;
-  currency: string;
-  status: string;
-  error?: string;
-  createdAt: string;
-}
-
-export default function PaymentFailedPage() {
+function PaymentFailedContent() {
   const searchParams = useSearchParams();
-  const [payment, setPayment] = useState<PaymentData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const paymentId = searchParams.get('id');
-    if (!paymentId) return;
-
-    const fetchPayment = async () => {
-      try {
-        const paymentDoc = await getDoc(doc(db, 'payments', paymentId));
-        if (paymentDoc.exists()) {
-          setPayment(paymentDoc.data() as PaymentData);
-        }
-      } catch (error) {
-        console.error('Error fetching payment:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPayment();
-  }, [searchParams]);
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading payment details...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!payment) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-600">Payment not found</p>
-        </div>
-      </div>
-    );
-  }
+  const error = searchParams.get('error');
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
@@ -66,26 +14,29 @@ export default function PaymentFailedPage() {
         <XCircle className="mx-auto h-16 w-16 text-red-500" />
         <h1 className="mt-4 text-2xl font-bold text-gray-900">Payment Failed</h1>
         <p className="mt-2 text-gray-600">
-          Your payment of {payment.currency} {payment.amount} was not successful
+          {error || 'There was an error processing your payment. Please try again.'}
         </p>
-        {payment.error && (
-          <p className="mt-2 text-sm text-red-600">{payment.error}</p>
-        )}
-        <div className="mt-6 space-y-4">
+        <div className="mt-6">
           <button
             onClick={() => window.history.back()}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium w-full justify-center"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
           >
             Try Again
-          </button>
-          <button
-            onClick={() => window.location.href = '/dashboard'}
-            className="inline-flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium w-full justify-center"
-          >
-            Return to Dashboard
           </button>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentFailedPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <div className="text-gray-500">Loading...</div>
+      </div>
+    }>
+      <PaymentFailedContent />
+    </Suspense>
   );
 } 
